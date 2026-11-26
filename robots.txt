@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://qosimovxusanboy141-dev.github.io/husanboy-teacher/sitemap.xml

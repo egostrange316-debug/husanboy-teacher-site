@@ -1,0 +1,2398 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>HUSANBOY TEACHER — 6.5s Kinematografik Intro Studiyasi</title>
+
+  <style>
+    :root {
+      --bg-obsidian: #030712;
+      --gold-light: #fef3c7;
+      --gold-champagne: #f5e6c4;
+      --gold-warm: #e5b869;
+      --gold-deep: #9a6b2f;
+      --glass-bg: rgba(5, 10, 22, 0.72);
+      --glass-border: rgba(245, 230, 196, 0.18);
+      --text-main: #f8fafc;
+      --text-muted: rgba(203, 213, 225, 0.74);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100vw;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: var(--bg-obsidian);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .font-serif {
+      font-family: 'Cinzel', Georgia, 'Times New Roman', serif;
+    }
+
+    .font-mono-num {
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.04em;
+    }
+
+    /* Pure High-DPI HTML5 Canvas 2D Stage */
+    #stageCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100dvh;
+      display: block;
+      z-index: 1;
+      background: #030712;
+    }
+
+    /* Luxury Glassmorphism Surface */
+    .glass {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+
+    /* =========================================================================
+       TOP FLOATING CONTROLS (Status + 3 Live Color Themes)
+       ========================================================================= */
+    .top-bar {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      pointer-events: none;
+      transition: opacity 0.6s ease;
+    }
+
+    .top-bar.is-dimmed {
+      opacity: 0.36;
+    }
+    .top-bar.is-dimmed:hover,
+    .top-bar.is-dimmed:focus-within {
+      opacity: 1;
+    }
+
+    .top-left, .top-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: auto;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--gold-champagne);
+      letter-spacing: 0.04em;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 9999px;
+      background: #fbbf24;
+      box-shadow: 0 0 10px rgba(251, 191, 36, 0.85);
+    }
+
+    .rec-badge {
+      display: none;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 13px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #fda4af;
+      border-color: rgba(244, 63, 94, 0.45);
+    }
+    .rec-badge.is-visible {
+      display: inline-flex;
+    }
+    .rec-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 9999px;
+      background: #f43f5e;
+      animation: pulseDot 1s ease-in-out infinite;
+    }
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.8); }
+    }
+
+    /* 3 Live Theme Switcher */
+    .theme-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 11px;
+      border-radius: 9999px;
+    }
+
+    .theme-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px 3px 4px;
+      border-radius: 9999px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.24s ease;
+    }
+    .theme-btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .theme-btn.is-active {
+      color: #fefce8;
+      border-color: rgba(254, 243, 199, 0.38);
+      background: rgba(255, 255, 255, 0.09);
+    }
+
+    .theme-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 9999px;
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
+      flex-shrink: 0;
+    }
+    .swatch-gold { background: linear-gradient(135deg, #fef3c7 0%, #e5b869 55%, #78350f 100%); }
+    .swatch-emerald { background: linear-gradient(135deg, #a7f3d0 0%, #10b981 55%, #064e3b 100%); }
+    .swatch-sapphire { background: linear-gradient(135deg, #e0f2fe 0%, #3b82f6 55%, #1e3a8a 100%); }
+
+    /* =========================================================================
+       LIVE ENTRY PORTAL (Transparent — Medallion Animates Live Behind)
+       ========================================================================= */
+    .entry-portal {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: clamp(42px, 8.5vh, 88px);
+      pointer-events: none;
+      transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.65s ease, transform 0.65s ease;
+    }
+    .entry-portal.is-hidden {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(14px);
+    }
+
+    .entry-controls {
+      pointer-events: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 11px;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    .btn-luminous {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 13px 32px;
+      border-radius: 9999px;
+      border: 1px solid rgba(254, 243, 199, 0.72);
+      background: linear-gradient(180deg, rgba(12, 19, 36, 0.76) 0%, rgba(28, 22, 12, 0.82) 100%);
+      color: #fffbeb;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 12px 42px rgba(0, 0, 0, 0.74), 0 0 34px rgba(229, 184, 105, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .btn-luminous::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -120%;
+      width: 55%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.32), transparent);
+      transform: skewX(-22deg);
+      animation: sheenSweep 3.5s ease-in-out infinite;
+    }
+    @keyframes sheenSweep {
+      0%, 55% { left: -120%; }
+      100% { left: 160%; }
+    }
+    .btn-luminous:hover {
+      transform: translateY(-2px);
+      border-color: #ffffff;
+      box-shadow: 0 14px 48px rgba(0, 0, 0, 0.82), 0 0 50px rgba(229, 184, 105, 0.52), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+    .btn-luminous:active {
+      transform: scale(0.97);
+    }
+
+    .portal-hint {
+      font-size: 11px;
+      color: rgba(245, 230, 196, 0.74);
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.92);
+    }
+    .portal-hint kbd {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 5px;
+      font-family: inherit;
+      font-size: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: var(--gold-champagne);
+    }
+
+    /* =========================================================================
+       POST-INTRO CTA ("ILOVAGA KIRISH →", Fades in at 5.2s)
+       ========================================================================= */
+    .enter-cta-wrap {
+      position: fixed;
+      bottom: 84px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 25;
+      transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.65s ease;
+    }
+    .enter-cta-wrap.is-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translate(-50%, 14px);
+    }
+
+    /* Post-Warp Confirmation Screen */
+    .app-opened-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 35;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: radial-gradient(circle at 50% 45%, rgba(15, 23, 42, 0.88), rgba(3, 7, 18, 0.97));
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    .app-opened-overlay.is-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .opened-medallion {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 14px;
+      max-width: 420px;
+    }
+
+    .opened-circle {
+      width: 96px;
+      height: 96px;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle, rgba(229, 184, 105, 0.24) 0%, rgba(15, 23, 42, 0.62) 72%);
+      border: 1.5px solid rgba(254, 243, 199, 0.58);
+      box-shadow: 0 0 48px rgba(229, 184, 105, 0.32);
+    }
+
+    /* =========================================================================
+       BOTTOM COMPACT CONTROL BAR
+       ========================================================================= */
+    .bottom-bar {
+      position: fixed;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 30;
+      width: min(95vw, 1020px);
+      border-radius: 9999px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .bottom-bar.is-hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 18px);
+    }
+
+    .bar-group {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-shrink: 0;
+    }
+
+    .btn-replay {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 9999px;
+      border: none;
+      background: linear-gradient(180deg, #fef3c7 0%, #e5b869 100%);
+      color: #030712;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+    .btn-replay:hover { filter: brightness(1.08); }
+    .btn-replay:active { transform: scale(0.96); }
+
+    .btn-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--gold-champagne);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    .btn-icon:hover {
+      background: rgba(255, 255, 255, 0.13);
+      border-color: rgba(254, 243, 199, 0.44);
+    }
+
+    .btn-export {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 13px;
+      border-radius: 9999px;
+      border: 1px solid rgba(229, 184, 105, 0.42);
+      background: rgba(229, 184, 105, 0.14);
+      color: #fef3c7;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .btn-export:hover {
+      background: rgba(229, 184, 105, 0.26);
+      border-color: rgba(254, 243, 199, 0.72);
+    }
+    .btn-export:disabled { opacity: 0.55; cursor: wait; }
+
+    /* 48-Bar Mirrored Audio Spectrum + Scrubber */
+    .timeline-center {
+      flex: 1;
+      min-width: 180px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .spectrum-wrap {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+
+    .viz-bar {
+      width: 2px;
+      height: 100%;
+      border-radius: 9999px;
+      background: linear-gradient(to top, rgba(154, 107, 47, 0.65), rgba(229, 184, 105, 0.95), #ffffff);
+      transform-origin: center center;
+      transform: scaleY(0.12);
+      will-change: transform;
+    }
+
+    .scrubber-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 110px;
+    }
+
+    .scrubber-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 10.5px;
+    }
+
+    .phase-text {
+      color: var(--gold-champagne);
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 220px;
+    }
+
+    .timecode {
+      color: var(--text-muted);
+      font-size: 10px;
+      flex-shrink: 0;
+    }
+
+    .scrubber-track {
+      position: relative;
+      width: 100%;
+      height: 12px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    .scrubber-rail {
+      width: 100%;
+      height: 4px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+    }
+    .scrubber-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 9999px;
+      background: linear-gradient(90deg, #b47d34, #f5e6c4, #ffffff);
+    }
+    .scrubber-thumb {
+      position: absolute;
+      top: 50%;
+      left: 0%;
+      width: 10px;
+      height: 10px;
+      border-radius: 9999px;
+      background: #ffffff;
+      box-shadow: 0 0 10px rgba(254, 243, 199, 0.9);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      top: 62px;
+      left: 50%;
+      transform: translate(-50%, -10px);
+      z-index: 60;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .toast.is-visible {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    @media (max-width: 780px) {
+      .spectrum-wrap { display: none; }
+      .theme-label-sm { display: none; }
+      .theme-btn { padding: 3px; }
+      .bottom-bar { border-radius: 22px; flex-wrap: wrap; padding: 9px 12px; gap: 8px; }
+      .enter-cta-wrap { bottom: 118px; }
+    }
+
+    /* APP SPLASH MODE OVERRIDES */
+    #topBar, #entryPortal, #bottomBar, #appOpenedOverlay, #toastEl { display: none !important; }
+    .enter-cta-wrap { bottom: max(38px, env(safe-area-inset-bottom, 38px)) !important; }
+    .skip-intro-btn {
+      position: fixed;
+      top: max(16px, env(safe-area-inset-top, 16px));
+      right: 16px;
+      z-index: 40;
+      padding: 8px 15px;
+      border-radius: 9999px;
+      border: 1px solid rgba(254, 243, 199, 0.35);
+      background: rgba(5, 10, 22, 0.65);
+      color: #f5e6c4;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+    .skip-intro-btn:active { transform: scale(0.95); }
+  </style>
+</head>
+<body>
+
+  <!-- Pure High-DPI HTML5 Canvas 2D Stage (Guaranteed Zero Blank-Screen Rendering) -->
+  <canvas id="stageCanvas" aria-label="Husanboy Teacher Kinematografik Intro Sahnasi"></canvas>
+  <button id="skipIntroBtn" type="button" class="skip-intro-btn">O‘tkazib yuborish ⏭</button>
+
+  <!-- =========================================================================
+       TOP FLOATING CONTROLS
+       ========================================================================= -->
+  <header id="topBar" class="top-bar">
+    <div class="top-left">
+      <div class="glass pill">
+        <span class="status-dot"></span>
+        <span id="modeLabel">Oltin Tong • Samoviy Medalyon</span>
+      </div>
+
+      <div id="recBadge" class="glass rec-badge font-mono-num">
+        <span class="rec-dot"></span>
+        <span id="recLabel">YOZILMOQDA • 0.0s</span>
+      </div>
+    </div>
+
+    <div class="top-right">
+      <!-- 3 Live-Switchable Luxury Color Themes -->
+      <div class="glass theme-pill" role="group" aria-label="Rang mavzulari">
+        <button type="button" class="theme-btn is-active" data-theme="0" title="Oltin Tong">
+          <span class="theme-swatch swatch-gold"></span>
+          <span class="theme-label-sm">Oltin Tong</span>
+        </button>
+        <button type="button" class="theme-btn" data-theme="1" title="Zumrad Nur">
+          <span class="theme-swatch swatch-emerald"></span>
+          <span class="theme-label-sm">Zumrad Nur</span>
+        </button>
+        <button type="button" class="theme-btn" data-theme="2" title="Qirollik Sapfiri">
+          <span class="theme-swatch swatch-sapphire"></span>
+          <span class="theme-label-sm">Qirollik Sapfiri</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       TRANSPARENT LIVE ENTRY PORTAL
+       ========================================================================= -->
+  <section id="entryPortal" class="entry-portal">
+    <div class="entry-controls">
+      <button id="startIntroBtn" type="button" class="btn-luminous">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="color:#fde68a">
+          <polygon points="6 4 20 12 6 20 6 4"></polygon>
+        </svg>
+        <span>BOSHLASH • OVOZ BILAN</span>
+      </button>
+      <p class="portal-hint">
+        Ishga tushirish uchun <kbd>Space</kbd> yoki <kbd>Enter</kbd> tugmasini ham bosishingiz mumkin
+      </p>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       POST-INTRO CTA ("ILOVAGA KIRISH →", Fades in at 5.2s)
+       ========================================================================= -->
+  <div id="enterCtaWrap" class="enter-cta-wrap is-hidden">
+    <button id="enterAppBtn" type="button" class="btn-luminous" style="padding:12px 28px;">
+      <span>Ilovaga Kirish</span>
+      <span style="font-size:16px; line-height:1; color:#fde68a">→</span>
+    </button>
+  </div>
+
+  <!-- =========================================================================
+       POST-WARP CONFIRMATION SCREEN
+       ========================================================================= -->
+  <section id="appOpenedOverlay" class="app-opened-overlay is-hidden">
+    <div class="opened-medallion">
+      <div class="opened-circle">
+        <span class="font-serif" style="font-size:32px; font-weight:700; letter-spacing:0.1em; color:#fef3c7; padding-left:3px;">HT</span>
+      </div>
+      <h2 class="font-serif" style="font-size:24px; font-weight:700; letter-spacing:0.18em; color:#fefce8;">HUSANBOY TEACHER</h2>
+      <p style="font-size:12px; letter-spacing:0.22em; color:rgba(245,230,196,0.78); text-transform:uppercase; margin-bottom:10px;">
+        ILM • UMID • YORUG‘ KELAJAK
+      </p>
+      <button id="replayFromOpenedBtn" type="button" class="btn-luminous">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="color:#fde68a">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+          <path d="M3 3v5h5" />
+        </svg>
+        <span>Qayta ko‘rish</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       BOTTOM COMPACT CONTROL BAR
+       ========================================================================= -->
+  <footer id="bottomBar" class="glass bottom-bar is-hidden">
+    <div class="bar-group">
+      <button id="replayBtn" type="button" class="btn-replay" title="Boshidan qayta ijro">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+          <path d="M3 3v5h5" />
+        </svg>
+        <span>Qayta</span>
+      </button>
+
+      <button id="playPauseBtn" type="button" class="btn-icon" title="To‘xtatish / Davom ettirish" aria-label="To‘xtatish / Davom ettirish">
+        <svg id="pauseIcon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <rect x="6" y="4" width="4" height="16" rx="1"></rect>
+          <rect x="14" y="4" width="4" height="16" rx="1"></rect>
+        </svg>
+        <svg id="playIcon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+          <polygon points="6 4 20 12 6 20 6 4"></polygon>
+        </svg>
+      </button>
+
+      <button id="soundToggleBtn" type="button" class="btn-icon" title="Ovozni yoqish / o‘chirish" aria-label="Ovozni boshqarish">
+        <svg id="soundOnIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+        </svg>
+        <svg id="soundOffIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="display:none; color:#fb7185">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <line x1="23" y1="9" x2="17" y2="15"></line>
+          <line x1="17" y1="9" x2="23" y2="15"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- 48-Bar Mirrored Real-Time Audio Spectrum + 6.5s Scrubber -->
+    <div class="timeline-center">
+      <div id="spectrumWrap" class="spectrum-wrap" aria-hidden="true"></div>
+
+      <div class="scrubber-col">
+        <div class="scrubber-meta">
+          <span id="phaseCaption" class="phase-text">01 • Uyg‘onish</span>
+          <span id="timecodeDisplay" class="timecode font-mono-num">00.00s / 06.50s</span>
+        </div>
+        <div id="scrubberTrack" class="scrubber-track" role="slider" aria-label="Intro vaqt chizig‘i" aria-valuemin="0" aria-valuemax="6.5" aria-valuenow="0">
+          <div class="scrubber-rail">
+            <div id="scrubberFill" class="scrubber-fill"></div>
+          </div>
+          <div id="scrubberThumb" class="scrubber-thumb"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bar-group">
+      <button id="exportVideoBtn" type="button" class="btn-export">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#fcd34d">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span id="exportBtnText">Video (.webm)</span>
+      </button>
+    </div>
+  </footer>
+
+  <!-- Toast Notification -->
+  <div id="toastEl" class="toast">
+    <div class="glass pill" style="border-color:rgba(245,230,196,0.34);">
+      <span class="status-dot"></span>
+      <span id="toastText">Tayyor</span>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       PURE HIGH-DPI HTML5 CANVAS 2D ENGINE + 6.5s STUDIO WEB AUDIO ENGINE
+       ========================================================================= -->
+  <script>
+    (function () {
+      'use strict';
+
+      // -----------------------------------------------------------------------
+      // 1. CONSTANTS, 3 LUXURY COLOR THEMES & DOM REFERENCES
+      // -----------------------------------------------------------------------
+      const DURATION = 6.5;
+
+      const THEMES = [
+        {
+          id: 0,
+          name: 'Oltin Tong',
+          lensTop: '#071024',
+          lensMid: '#0d1b36',
+          lensBot: '#1f1910',
+          bezelDark: '#0b1120',
+          bezelMid: '#1a2540',
+          cssGold: '#fef3c7',
+          cssMid: '#e5b869',
+          cssDeep: '#9a6b2f',
+          ribbonA: '254, 232, 168',
+          ribbonB: '229, 172, 84',
+          auroraTint: '125, 185, 255',
+          pearlRGB: '255, 250, 230',
+          sparkRGB: '253, 224, 152',
+          flareRGB: '255, 226, 158'
+        },
+        {
+          id: 1,
+          name: 'Zumrad Nur',
+          lensTop: '#031713',
+          lensMid: '#072a23',
+          lensBot: '#1c2414',
+          bezelDark: '#041c17',
+          bezelMid: '#0d3b30',
+          cssGold: '#fef9c3',
+          cssMid: '#34d399',
+          cssDeep: '#065f46',
+          ribbonA: '254, 240, 178',
+          ribbonB: '52, 211, 153',
+          auroraTint: '16, 185, 129',
+          pearlRGB: '236, 253, 245',
+          sparkRGB: '167, 243, 208',
+          flareRGB: '214, 248, 206'
+        },
+        {
+          id: 2,
+          name: 'Qirollik Sapfiri',
+          lensTop: '#060d24',
+          lensMid: '#0e1f4d',
+          lensBot: '#1a1e33',
+          bezelDark: '#081129',
+          bezelMid: '#172b5e',
+          cssGold: '#f0f9ff',
+          cssMid: '#93c5fd',
+          cssDeep: '#1e40af',
+          ribbonA: '224, 242, 254',
+          ribbonB: '245, 208, 122',
+          auroraTint: '96, 165, 250',
+          pearlRGB: '240, 249, 255',
+          sparkRGB: '219, 234, 254',
+          flareRGB: '214, 232, 255'
+        }
+      ];
+
+      const PHASE_LABELS = [
+        { t: 0.00, text: '01 • Uyg‘onish — Samoviy yulduz va kitob' },
+        { t: 1.50, text: '02 • Samoviy Yuksalish — Nur lentalari va 3D giroskop' },
+        { t: 3.45, text: '03 • Nurlanish va Muhr — HT • IELTS & CEFR' },
+        { t: 4.80, text: '04 • HUSANBOY TEACHER — Yorug‘ kelajak' }
+      ];
+
+      const canvas = document.getElementById('stageCanvas');
+      const ctx = canvas.getContext('2d', { alpha: false });
+
+      const topBar = document.getElementById('topBar');
+      const modeLabel = document.getElementById('modeLabel');
+      const recBadge = document.getElementById('recBadge');
+      const recLabel = document.getElementById('recLabel');
+      const themeBtns = Array.from(document.querySelectorAll('.theme-btn'));
+
+      const entryPortal = document.getElementById('entryPortal');
+      const startIntroBtn = document.getElementById('startIntroBtn');
+      const enterCtaWrap = document.getElementById('enterCtaWrap');
+      const enterAppBtn = document.getElementById('enterAppBtn');
+      const appOpenedOverlay = document.getElementById('appOpenedOverlay');
+      const replayFromOpenedBtn = document.getElementById('replayFromOpenedBtn');
+
+      const bottomBar = document.getElementById('bottomBar');
+      const replayBtn = document.getElementById('replayBtn');
+      const playPauseBtn = document.getElementById('playPauseBtn');
+      const pauseIcon = document.getElementById('pauseIcon');
+      const playIcon = document.getElementById('playIcon');
+      const soundToggleBtn = document.getElementById('soundToggleBtn');
+      const soundOnIcon = document.getElementById('soundOnIcon');
+      const soundOffIcon = document.getElementById('soundOffIcon');
+      const spectrumWrap = document.getElementById('spectrumWrap');
+      const phaseCaption = document.getElementById('phaseCaption');
+      const timecodeDisplay = document.getElementById('timecodeDisplay');
+      const scrubberTrack = document.getElementById('scrubberTrack');
+      const scrubberFill = document.getElementById('scrubberFill');
+      const scrubberThumb = document.getElementById('scrubberThumb');
+      const exportVideoBtn = document.getElementById('exportVideoBtn');
+      const exportBtnText = document.getElementById('exportBtnText');
+
+      const toastEl = document.getElementById('toastEl');
+      const toastText = document.getElementById('toastText');
+
+      // Playback & Interaction State
+      let activeThemeIdx = 0;
+      let isSoundEnabled = true;
+      let hasStarted = false;
+      let isPaused = false;
+      let pausedAtSec = 0;
+      let startTimestamp = 0;
+      let manualSeekTime = null;
+      let isScrubbing = false;
+      let isRecording = false;
+      let warpOutStart = -1;
+      let lastPhaseIdx = -1;
+      let prevTimeSec = 0;
+      let toastTimer = null;
+
+      // Smooth Mouse / Touch Parallax
+      const pointer = { tx: 0, ty: 0, x: 0, y: 0 };
+
+      // Math Helpers
+      const clamp01 = (v) => Math.max(0, Math.min(1, v));
+      const lerp = (a, b, t) => a + (b - a) * t;
+      const easeOutCubic = (x) => 1 - Math.pow(1 - x, 3);
+      const easeInOutQuart = (x) => (x < 0.5 ? 8 * x * x * x * x : 1 - Math.pow(-2 * x + 2, 4) / 2);
+
+      function showToast(msg, ms = 2400) {
+        toastText.textContent = msg;
+        toastEl.classList.add('is-visible');
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toastEl.classList.remove('is-visible'), ms);
+      }
+
+      // Compute Centered Circular Astrolabe Medallion Geometry
+      function getMedallionMetrics(w, h) {
+        const R = Math.min(w * 0.38, h * 0.335);
+        const cx = w * 0.5;
+        const cy = h * 0.465;
+        const lensR = R * 0.795;
+        const bezelInnerR = R * 0.802;
+        const bezelOuterR = R * 1.00;
+        const textR = R * 0.902;
+        return { cx, cy, R, lensR, bezelInnerR, bezelOuterR, textR };
+      }
+
+      // -----------------------------------------------------------------------
+      // 2. PROCEDURAL PARTICLES: 110+ RISING STARDUST SPARKS, BOKEH & 3D RINGS
+      // -----------------------------------------------------------------------
+      const OUTER_STARS = [];
+      const RISING_SPARKS = [];
+
+      (function seedParticles() {
+        let s = 4219;
+        const rnd = () => { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; };
+
+        // 120 ambient background starfield & bokeh particles around the medallion
+        for (let i = 0; i < 120; i++) {
+          OUTER_STARS.push({
+            angle: rnd() * Math.PI * 2,
+            dist: 0.35 + rnd() * 0.85,
+            speed: (0.04 + rnd() * 0.14) * (rnd() < 0.25 ? -1 : 1),
+            size: 1.0 + rnd() * 2.8,
+            alpha: 0.22 + rnd() * 0.65,
+            twinkle: rnd() * Math.PI * 2,
+            burst: 0
+          });
+        }
+
+        // 105 rising golden stardust sparks & bokeh particles inside the circular medallion
+        for (let i = 0; i < 105; i++) {
+          RISING_SPARKS.push({
+            phase: rnd(),
+            speed: 0.13 + rnd() * 0.25,
+            xBase: (rnd() - 0.5) * 1.15,
+            swayAmp: 0.03 + rnd() * 0.08,
+            swayFreq: 1.0 + rnd() * 2.4,
+            size: i % 4 === 0 ? (0.015 + rnd() * 0.022) : (0.006 + rnd() * 0.011),
+            isBokeh: i % 4 === 0,
+            isFlare: i % 7 === 0,
+            twinkle: rnd() * Math.PI * 2
+          });
+        }
+      })();
+
+      function triggerBurst(power = 1.0) {
+        for (let i = 0; i < OUTER_STARS.length; i++) {
+          OUTER_STARS[i].burst = (0.3 + Math.random() * 0.8) * power;
+        }
+      }
+
+      // Three 3D Tilted Gyroscopic Celestial Rings orbiting around the HT Monogram
+      const GYRO_RINGS = [
+        {
+          radius: 0.64,
+          tiltX: 1.15,
+          tiltZ: -0.34,
+          precessSpeed: 0.24,
+          orbitSpeed: 0.82,
+          ticks: 48,
+          pearls: [0, Math.PI],
+          lineWidth: 0.0085,
+          delay: 0.00,
+          tone: 'gold'
+        },
+        {
+          radius: 0.74,
+          tiltX: 1.24,
+          tiltZ: 0.42,
+          precessSpeed: -0.19,
+          orbitSpeed: -0.64,
+          ticks: 60,
+          pearls: [0.8, 0.8 + Math.PI * 0.67, 0.8 + Math.PI * 1.33],
+          lineWidth: 0.0072,
+          delay: 0.16,
+          tone: 'platinum'
+        },
+        {
+          radius: 0.54,
+          tiltX: 1.04,
+          tiltZ: 0.08,
+          precessSpeed: 0.30,
+          orbitSpeed: 1.08,
+          ticks: 36,
+          pearls: [2.1, 2.1 + Math.PI],
+          lineWidth: 0.0065,
+          delay: 0.30,
+          tone: 'aurora'
+        }
+      ];
+
+      // -----------------------------------------------------------------------
+      // 3. CANVAS 2D DRAWING HELPERS (3D Projection, Ribbons, Star, Curved Text)
+      // -----------------------------------------------------------------------
+      function projectGyroPoint(ring, theta, ambientSec, radiusScale) {
+        const r = ring.radius * radiusScale;
+        const x0 = Math.cos(theta) * r;
+        const y0 = Math.sin(theta) * r;
+
+        const tiltX = ring.tiltX + Math.sin(ambientSec * 0.45) * 0.055;
+        const y1 = y0 * Math.cos(tiltX);
+        const z1 = y0 * Math.sin(tiltX);
+
+        const rotZ = ring.tiltZ + Math.sin(ambientSec * ring.precessSpeed) * 0.16;
+        const cosZ = Math.cos(rotZ);
+        const sinZ = Math.sin(rotZ);
+
+        const x2 = x0 * cosZ - y1 * sinZ;
+        const y2 = x0 * sinZ + y1 * cosZ;
+        const persp = 1.0 / (1.0 - z1 * 0.28);
+
+        return { x: x2 * persp, y: y2 * persp, z: z1, persp };
+      }
+
+      // Draw Back Half (z < 0, behind HT) or Front Half (z >= 0, in front of HT) of 3D Gyroscopic Rings
+      function drawGyroscopicRingsHalf(cx, cy, lensR, ringProg, ambientSec, bass, mid, theme, fadeWarp, drawFrontHalf) {
+        if (ringProg <= 0.01) return;
+
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+
+        for (let rIdx = 0; rIdx < GYRO_RINGS.length; rIdx++) {
+          const ring = GYRO_RINGS[rIdx];
+          const lp = easeOutCubic(clamp01((ringProg - ring.delay) / 0.65));
+          if (lp <= 0.01) continue;
+
+          const audioScale = (0.72 + 0.28 * lp) * (1.0 + bass * 0.065 + mid * 0.03);
+          const steps = 96;
+          const baseColor = ring.tone === 'platinum'
+            ? theme.pearlRGB
+            : (ring.tone === 'aurora' ? theme.auroraTint : theme.ribbonA);
+
+          const alphaBase = (drawFrontHalf ? 0.86 : 0.36) * lp * fadeWarp;
+          ctx.lineCap = 'round';
+
+          // Pass 0: Soft Luminous Halo | Pass 1: Crisp Metallic Core
+          for (let pass = 0; pass < 2; pass++) {
+            const isHalo = pass === 0;
+            ctx.strokeStyle = isHalo
+              ? `rgba(${baseColor}, ${(alphaBase * 0.34).toFixed(3)})`
+              : `rgba(${theme.pearlRGB}, ${(alphaBase * 0.94).toFixed(3)})`;
+            ctx.lineWidth = Math.max(0.9, lensR * ring.lineWidth * (isHalo ? 3.2 : 0.95));
+
+            let drawing = false;
+            ctx.beginPath();
+            for (let i = 0; i <= steps; i++) {
+              const theta = (i / steps) * Math.PI * 2;
+              const pt = projectGyroPoint(ring, theta, ambientSec, audioScale);
+              const inHalf = drawFrontHalf ? (pt.z >= 0) : (pt.z < 0);
+
+              if (inHalf) {
+                const sx = cx + pt.x * lensR;
+                const sy = cy + pt.y * lensR;
+                if (!drawing) {
+                  ctx.moveTo(sx, sy);
+                  drawing = true;
+                } else {
+                  ctx.lineTo(sx, sy);
+                }
+              } else {
+                drawing = false;
+              }
+            }
+            ctx.stroke();
+          }
+
+          // Fine Celestial Tick Marks along the Ring
+          const tickAlpha = (drawFrontHalf ? 0.54 : 0.22) * lp * fadeWarp;
+          ctx.strokeStyle = `rgba(${baseColor}, ${tickAlpha.toFixed(3)})`;
+          ctx.lineWidth = Math.max(0.7, lensR * 0.0028);
+          for (let k = 0; k < ring.ticks; k++) {
+            const theta = (k / ring.ticks) * Math.PI * 2 + ambientSec * ring.orbitSpeed * 0.22;
+            const pIn = projectGyroPoint(ring, theta, ambientSec, audioScale * 0.974);
+            const pOut = projectGyroPoint(ring, theta, ambientSec, audioScale * (k % 4 === 0 ? 1.032 : 1.016));
+            const inHalf = drawFrontHalf ? (pIn.z >= 0) : (pIn.z < 0);
+            if (!inHalf) continue;
+            ctx.beginPath();
+            ctx.moveTo(cx + pIn.x * lensR, cy + pIn.y * lensR);
+            ctx.lineTo(cx + pOut.x * lensR, cy + pOut.y * lensR);
+            ctx.stroke();
+          }
+
+          // Orbiting Glowing Light Pearls
+          for (let pIdx = 0; pIdx < ring.pearls.length; pIdx++) {
+            const theta = ring.pearls[pIdx] + ambientSec * ring.orbitSpeed;
+            const pt = projectGyroPoint(ring, theta, ambientSec, audioScale);
+            const inHalf = drawFrontHalf ? (pt.z >= 0) : (pt.z < 0);
+            if (!inHalf) continue;
+
+            const px = cx + pt.x * lensR;
+            const py = cy + pt.y * lensR;
+            const pearlR = Math.max(2.0, lensR * 0.020 * pt.persp * (1.0 + bass * 0.24));
+            const pAlpha = (drawFrontHalf ? 0.96 : 0.44) * lp * fadeWarp;
+
+            const pg = ctx.createRadialGradient(px, py, 0, px, py, pearlR * 3.8);
+            pg.addColorStop(0.0, `rgba(255, 255, 252, ${pAlpha.toFixed(3)})`);
+            pg.addColorStop(0.32, `rgba(${baseColor}, ${(pAlpha * 0.62).toFixed(3)})`);
+            pg.addColorStop(1.0, 'rgba(0,0,0,0)');
+            ctx.fillStyle = pg;
+            ctx.beginPath();
+            ctx.arc(px, py, pearlR * 3.8, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        ctx.restore();
+      }
+
+      // Draw Double-Helix Golden Aurora Ribbons weaving behind (z < 0) & in front of (z >= 0) HT
+      function drawDoubleHelixRibbonsHalf(lx, ly, lensR, helixProg, ambientSec, bass, mid, high, theme, fadeWarp, drawFrontHalf) {
+        if (helixProg <= 0.01) return;
+
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        const segs = 76;
+        const maxU = easeOutCubic(helixProg);
+
+        for (let strand = 0; strand < 2; strand++) {
+          const phaseOff = strand * Math.PI;
+          const ribbonRGB = strand === 0 ? theme.ribbonA : theme.ribbonB;
+
+          const pts = [];
+          for (let i = 0; i <= segs; i++) {
+            const u = (i / segs) * maxU;
+            const envelope = Math.sin(u * Math.PI) * 0.78 + 0.14 * Math.sin(u * Math.PI * 2.0);
+            const swirlAmp = (0.44 + bass * 0.055) * envelope;
+            const twist = u * Math.PI * 3.4 - ambientSec * 1.45 + phaseOff;
+
+            const x = Math.sin(twist) * swirlAmp;
+            const z = Math.cos(twist);
+            const y = lerp(0.46, -0.84, u) + Math.sin(u * 8.0 - ambientSec * 2.4 + phaseOff) * 0.014;
+            const taper = Math.sin(clamp01(u / Math.max(0.08, maxU)) * Math.PI);
+
+            pts.push({
+              sx: lx + x * lensR,
+              sy: ly + y * lensR,
+              z,
+              taper: Math.max(0.12, taper)
+            });
+          }
+
+          const layers = [
+            { widthMul: 0.054, alpha: drawFrontHalf ? 0.16 : 0.08, rgb: theme.auroraTint },
+            { widthMul: 0.026, alpha: drawFrontHalf ? 0.56 : 0.24, rgb: ribbonRGB },
+            { widthMul: 0.008, alpha: drawFrontHalf ? 0.94 : 0.38, rgb: theme.pearlRGB }
+          ];
+
+          for (let l = 0; l < layers.length; l++) {
+            const lyCfg = layers[l];
+            for (let i = 0; i < pts.length - 1; i++) {
+              const a = pts[i];
+              const b = pts[i + 1];
+              const zMid = (a.z + b.z) * 0.5;
+              const inHalf = drawFrontHalf ? (zMid >= 0) : (zMid < 0);
+              if (!inHalf) continue;
+
+              const depthFade = drawFrontHalf ? (0.65 + 0.35 * zMid) : (0.55 + 0.35 * (1.0 + zMid));
+              const segAlpha = lyCfg.alpha * a.taper * depthFade * fadeWarp * (0.9 + mid * 0.25);
+              if (segAlpha < 0.01) continue;
+
+              ctx.strokeStyle = `rgba(${lyCfg.rgb}, ${Math.min(1, segAlpha).toFixed(3)})`;
+              ctx.lineWidth = Math.max(0.9, lensR * lyCfg.widthMul * (0.45 + 0.65 * a.taper));
+              ctx.beginPath();
+              ctx.moveTo(a.sx, a.sy);
+              ctx.lineTo(b.sx, b.sy);
+              ctx.stroke();
+            }
+          }
+
+          // Glowing Leading Starlight Tip while ascending
+          if (maxU < 0.99 && pts.length > 1) {
+            const tip = pts[pts.length - 1];
+            const tipInHalf = drawFrontHalf ? (tip.z >= 0) : (tip.z < 0);
+            if (tipInHalf) {
+              const tr = lensR * 0.075 * (1.0 + high * 0.35);
+              const tg = ctx.createRadialGradient(tip.sx, tip.sy, 0, tip.sx, tip.sy, tr);
+              tg.addColorStop(0.0, `rgba(255, 254, 245, ${(0.95 * fadeWarp).toFixed(3)})`);
+              tg.addColorStop(0.35, `rgba(${ribbonRGB}, ${(0.55 * fadeWarp).toFixed(3)})`);
+              tg.addColorStop(1.0, 'rgba(0,0,0,0)');
+              ctx.fillStyle = tg;
+              ctx.beginPath();
+              ctx.arc(tip.sx, tip.sy, tr, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+        }
+
+        ctx.restore();
+      }
+
+      // Draw 9 Volumetric Prismatic Light Rays + Warm Golden Dawn Sunrise Glow
+      function drawPrismaticDawnBeams(bx, by, lensR, bookP, ambientSec, bass, theme, fadeWarp) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+
+        const beamCount = 9;
+        for (let i = 0; i < beamCount; i++) {
+          const frac = (i / (beamCount - 1)) - 0.5;
+          const ang = -Math.PI * 0.5 + frac * 1.42 + Math.sin(ambientSec * 0.55 + i * 1.1) * 0.035;
+          const beamLen = lensR * (1.22 + 0.16 * Math.sin(ambientSec * 1.2 + i) + bass * 0.18);
+          const halfSpread = 0.055 + (i % 2) * 0.025;
+          const alpha = (0.15 + 0.08 * Math.sin(ambientSec * 1.6 + i * 0.9)) * bookP * fadeWarp * (1.0 - Math.abs(frac) * 0.52);
+
+          const ex = bx + Math.cos(ang) * beamLen;
+          const ey = by + Math.sin(ang) * beamLen;
+          const grad = ctx.createLinearGradient(bx, by, ex, ey);
+          grad.addColorStop(0.0, `rgba(${i % 3 === 1 ? theme.auroraTint : theme.flareRGB}, ${(alpha * 1.38).toFixed(3)})`);
+          grad.addColorStop(0.55, `rgba(${theme.ribbonA}, ${(alpha * 0.55).toFixed(3)})`);
+          grad.addColorStop(1.0, 'rgba(0,0,0,0)');
+
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.moveTo(bx, by);
+          ctx.lineTo(bx + Math.cos(ang - halfSpread) * beamLen, by + Math.sin(ang - halfSpread) * beamLen);
+          ctx.lineTo(bx + Math.cos(ang + halfSpread) * beamLen, by + Math.sin(ang + halfSpread) * beamLen);
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        const haloR = lensR * (0.88 + bass * 0.12);
+        const sunG = ctx.createRadialGradient(bx, by - lensR * 0.05, 0, bx, by - lensR * 0.10, haloR);
+        sunG.addColorStop(0.00, `rgba(255, 252, 236, ${(0.66 * bookP * fadeWarp).toFixed(3)})`);
+        sunG.addColorStop(0.28, `rgba(${theme.flareRGB}, ${(0.34 * bookP * fadeWarp).toFixed(3)})`);
+        sunG.addColorStop(0.60, `rgba(${theme.auroraTint}, ${(0.12 * bookP * fadeWarp).toFixed(3)})`);
+        sunG.addColorStop(1.00, 'rgba(0,0,0,0)');
+        ctx.fillStyle = sunG;
+        ctx.beginPath();
+        ctx.arc(bx, by - lensR * 0.08, haloR, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+      }
+
+      // Draw 105 Rising Golden Stardust Sparks & Bokeh Particles inside Medallion
+      function drawRisingSparks(lx, ly, lensR, sparkProg, ambientSec, high, theme, fadeWarp) {
+        if (sparkProg <= 0.01) return;
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+
+        for (let i = 0; i < RISING_SPARKS.length; i++) {
+          const e = RISING_SPARKS[i];
+          const cycle = (e.phase + ambientSec * e.speed) % 1.0;
+          const xNorm = e.xBase * (1.0 - cycle * 0.34) + Math.sin(ambientSec * e.swayFreq + e.twinkle) * e.swayAmp;
+          const yNorm = lerp(0.54, -0.86, cycle);
+          const sx = lx + xNorm * lensR;
+          const sy = ly + yNorm * lensR;
+
+          const tw = 0.55 + 0.45 * Math.sin(ambientSec * 4.6 + e.twinkle);
+          const alpha = Math.sin(cycle * Math.PI) * tw * sparkProg * fadeWarp;
+          if (alpha <= 0.02) continue;
+
+          const r = Math.max(1.0, e.size * lensR * (1.0 + high * 0.32));
+
+          if (e.isBokeh) {
+            const bg = ctx.createRadialGradient(sx, sy, 0, sx, sy, r * 2.2);
+            bg.addColorStop(0.0, `rgba(${theme.sparkRGB}, ${(alpha * 0.38).toFixed(3)})`);
+            bg.addColorStop(0.65, `rgba(${theme.ribbonB}, ${(alpha * 0.16).toFixed(3)})`);
+            bg.addColorStop(1.0, 'rgba(0,0,0,0)');
+            ctx.fillStyle = bg;
+            ctx.beginPath();
+            ctx.arc(sx, sy, r * 2.2, 0, Math.PI * 2);
+            ctx.fill();
+            continue;
+          }
+
+          if (e.isFlare) {
+            const fl = r * 3.4;
+            ctx.strokeStyle = `rgba(${theme.pearlRGB}, ${(alpha * 0.85).toFixed(3)})`;
+            ctx.lineWidth = Math.max(0.8, r * 0.28);
+            ctx.beginPath();
+            ctx.moveTo(sx - fl, sy); ctx.lineTo(sx + fl, sy);
+            ctx.moveTo(sx, sy - fl); ctx.lineTo(sx, sy + fl);
+            ctx.stroke();
+          }
+
+          const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, r * 2.8);
+          g.addColorStop(0.0, `rgba(255, 253, 242, ${(alpha * 0.95).toFixed(3)})`);
+          g.addColorStop(0.4, `rgba(${theme.ribbonA}, ${(alpha * 0.44).toFixed(3)})`);
+          g.addColorStop(1.0, 'rgba(0,0,0,0)');
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.arc(sx, sy, r * 2.8, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        ctx.restore();
+      }
+
+      // Draw 8-Pointed Guiding Star Path
+      function drawStar8(cx, cy, outerR, innerR) {
+        ctx.beginPath();
+        for (let i = 0; i < 16; i++) {
+          const ang = (i * Math.PI) / 8 - Math.PI / 2;
+          const r = i % 2 === 0 ? (i % 4 === 0 ? outerR : outerR * 0.62) : innerR;
+          const x = cx + Math.cos(ang) * r;
+          const y = cy + Math.sin(ang) * r;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+      }
+
+      // Draw Crisp Curved Typography Along the Circular Astrolabe Bezel Ring
+      function drawCurvedBezelText(text, cx, cy, radius, centerAngle, isBottomArc, fontSize, letterSpacing, fillStyle, glintAngle, alpha) {
+        if (alpha <= 0.01) return;
+        ctx.save();
+        ctx.font = `700 ${fontSize}px "Cinzel", Georgia, serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.globalAlpha = alpha;
+
+        const chars = text.split('');
+        const widths = chars.map((ch) => ctx.measureText(ch).width + letterSpacing);
+        const totalWidth = widths.reduce((a, b) => a + b, 0) - letterSpacing;
+        const totalAngle = totalWidth / radius;
+
+        let curAngle = isBottomArc
+          ? centerAngle + totalAngle * 0.5
+          : centerAngle - totalAngle * 0.5;
+
+        for (let i = 0; i < chars.length; i++) {
+          const ch = chars[i];
+          const halfArc = (widths[i] - letterSpacing) * 0.5 / radius;
+          const stepArc = widths[i] / radius;
+          const charAngle = isBottomArc ? (curAngle - halfArc) : (curAngle + halfArc);
+
+          const x = cx + Math.cos(charAngle) * radius;
+          const y = cy + Math.sin(charAngle) * radius;
+
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(isBottomArc ? (charAngle - Math.PI * 0.5) : (charAngle + Math.PI * 0.5));
+
+          // Crisp shadow for razor-sharp readability
+          ctx.shadowColor = 'rgba(2, 6, 18, 0.95)';
+          ctx.shadowBlur = 0;
+          ctx.fillStyle = fillStyle;
+          ctx.fillText(ch, 0, 0);
+
+          // Moving metallic glint sweep
+          const dAng = Math.abs(Math.atan2(Math.sin(charAngle - glintAngle), Math.cos(charAngle - glintAngle)));
+          if (dAng < 0.35) {
+            const gAlpha = (1 - dAng / 0.35) * 0.72 * alpha;
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = `rgba(255, 255, 250, ${gAlpha.toFixed(3)})`;
+            ctx.fillText(ch, 0, 0);
+          }
+
+          ctx.restore();
+          curAngle += isBottomArc ? -stepArc : stepArc;
+        }
+
+        ctx.restore();
+      }
+
+      // -----------------------------------------------------------------------
+      // 4. MASTER 2D RENDER PIPELINE (60FPS, IMMEDIATE LIVE PREVIEW)
+      // -----------------------------------------------------------------------
+      function renderScene(t, ambientSec, dt, bass, mid, high, impact, warpVal) {
+        const w = canvas.width;
+        const h = canvas.height;
+        const minDim = Math.min(w, h);
+        const theme = THEMES[activeThemeIdx];
+        const med = getMedallionMetrics(w, h);
+        const { cx, cy, R, lensR, bezelInnerR, bezelOuterR, textR } = med;
+        const pxOff = -pointer.x * minDim * 0.014;
+        const pyOff = pointer.y * minDim * 0.014;
+        const fadeWarp = 1.0 - warpVal;
+
+        // 1. Deep Midnight Obsidian Background (#030712) + Subtle Ambient Aura
+        ctx.fillStyle = '#030712';
+        ctx.fillRect(0, 0, w, h);
+
+        const bgAura = ctx.createRadialGradient(cx, cy, R * 0.2, cx, cy, Math.max(w, h) * 0.75);
+        bgAura.addColorStop(0.0, `rgba(${theme.flareRGB}, ${(0.11 + bass * 0.07 + impact * 0.14).toFixed(3)})`);
+        bgAura.addColorStop(0.45, `rgba(${theme.auroraTint}, ${(0.045 + mid * 0.03).toFixed(3)})`);
+        bgAura.addColorStop(1.0, 'rgba(3, 7, 18, 0)');
+        ctx.fillStyle = bgAura;
+        ctx.fillRect(0, 0, w, h);
+
+        // 2. Ambient Outer Starfield & Golden Warp-Out Light Tunnel
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        for (let i = 0; i < OUTER_STARS.length; i++) {
+          const p = OUTER_STARS[i];
+          p.angle += p.speed * dt;
+          p.burst *= Math.pow(0.08, dt);
+
+          const warpPush = warpVal * warpVal * 1.9;
+          const rDist = (p.dist + p.burst * 0.22 + warpPush) * Math.max(w, h) * 0.58;
+          const sx = cx + Math.cos(p.angle) * rDist + pxOff * 0.4;
+          const sy = cy + Math.sin(p.angle) * rDist + pyOff * 0.4;
+          const tw = 0.55 + 0.45 * Math.sin(ambientSec * 3.0 + p.twinkle);
+          const a = p.alpha * tw * (0.65 + high * 0.35);
+
+          if (warpVal > 0.02) {
+            // Golden Light-Tunnel Streak during Warp-Out
+            const streakLen = warpVal * minDim * 0.18;
+            const ex = sx + Math.cos(p.angle) * streakLen;
+            const ey = sy + Math.sin(p.angle) * streakLen;
+            ctx.strokeStyle = `rgba(${theme.sparkRGB}, ${(a * 0.95).toFixed(3)})`;
+            ctx.lineWidth = Math.max(1.2, p.size * (1 + warpVal * 1.4));
+            ctx.beginPath();
+            ctx.moveTo(sx, sy);
+            ctx.lineTo(ex, ey);
+            ctx.stroke();
+          } else {
+            ctx.fillStyle = `rgba(${theme.sparkRGB}, ${a.toFixed(3)})`;
+            ctx.beginPath();
+            ctx.arc(sx, sy, Math.max(0.8, p.size * (minDim / 900)), 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+        ctx.restore();
+
+        // 3. INSIDE THE CIRCULAR ASTROLABE MEDALLION (Strictly Clipped to Circle)
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, lensR, 0, Math.PI * 2);
+        ctx.clip();
+
+        // Rich Midnight-to-Dawn Interior Gradient
+        const lensGrad = ctx.createRadialGradient(cx, cy + lensR * 0.35, lensR * 0.05, cx, cy, lensR * 1.12);
+        lensGrad.addColorStop(0.00, theme.lensBot);
+        lensGrad.addColorStop(0.55, theme.lensMid);
+        lensGrad.addColorStop(1.00, theme.lensTop);
+        ctx.fillStyle = lensGrad;
+        ctx.fillRect(cx - lensR, cy - lensR, lensR * 2, lensR * 2);
+
+        const lx = cx + pxOff * 0.55;
+        const ly = cy + pyOff * 0.55;
+
+        // 3A. Warm Golden Dawn Sunrise Glow + 9 Prismatic Rays + Sculpted Open Golden Book
+        const bookP = hasStarted ? easeOutCubic(clamp01((t - 0.35) / 1.10)) : 0.72;
+        if (bookP > 0.01) {
+          const bx = lx;
+          const by = ly + lensR * 0.47;
+          const bw = lensR * 0.68 * (0.72 + 0.28 * bookP);
+          const bh = lensR * 0.145 * bookP;
+
+          drawPrismaticDawnBeams(bx, by, lensR, bookP, ambientSec, bass, theme, fadeWarp);
+
+          // Sculpted Multi-Layered Open Golden Book Pages
+          for (let layer = 0; layer < 5; layer++) {
+            const yOff = layer * lensR * 0.028;
+            const wCur = bw * (1.0 - layer * 0.05);
+            const alpha = (0.95 - layer * 0.16) * bookP * fadeWarp;
+
+            const pgGrad = ctx.createLinearGradient(bx - wCur, by, bx + wCur, by);
+            pgGrad.addColorStop(0.00, `rgba(${theme.sparkRGB}, 0)`);
+            pgGrad.addColorStop(0.18, `rgba(${theme.flareRGB}, ${alpha.toFixed(3)})`);
+            pgGrad.addColorStop(0.50, `rgba(255, 253, 244, ${Math.min(1, alpha * 1.25).toFixed(3)})`);
+            pgGrad.addColorStop(0.82, `rgba(${theme.flareRGB}, ${alpha.toFixed(3)})`);
+            pgGrad.addColorStop(1.00, `rgba(${theme.sparkRGB}, 0)`);
+
+            ctx.strokeStyle = pgGrad;
+            ctx.lineWidth = Math.max(1.3, lensR * (0.0115 - layer * 0.0017));
+            ctx.beginPath();
+            ctx.moveTo(bx, by + yOff);
+            ctx.quadraticCurveTo(bx - wCur * 0.46, by - bh + yOff, bx - wCur, by + yOff * 0.75);
+            ctx.moveTo(bx, by + yOff);
+            ctx.quadraticCurveTo(bx + wCur * 0.46, by - bh + yOff, bx + wCur, by + yOff * 0.75);
+            ctx.stroke();
+          }
+        }
+
+        // 3B. BACK HALF (z < 0): 3D Gyroscopic Rings & Double-Helix Aurora Ribbons BEHIND HT
+        const helixProg = hasStarted ? clamp01((t - 1.45) / 1.95) : 0.82;
+        const gyroProg  = hasStarted ? clamp01((t - 1.60) / 1.80) : 0.85;
+
+        drawGyroscopicRingsHalf(lx, ly - lensR * 0.04, lensR, gyroProg, ambientSec, bass, mid, theme, fadeWarp, false);
+        drawDoubleHelixRibbonsHalf(lx, ly, lensR, helixProg, ambientSec, bass, mid, high, theme, fadeWarp, false);
+
+        // 3C. CENTER HERO: Monumental 3D Brushed-Platinum & Champagne-Gold "HT" Monogram
+        const htP = hasStarted ? easeOutCubic(clamp01((t - 1.50) / 1.25)) : 0.88;
+        if (htP > 0.01) {
+          ctx.save();
+          const hx = cx + pxOff * 0.80;
+          const hy = cy + lensR * 0.02 + pyOff * 0.80 + (1 - htP) * lensR * 0.07;
+          const htSize = Math.round(lensR * 0.74 * (0.90 + 0.10 * htP));
+
+          ctx.font = `700 ${htSize}px "Cinzel", Georgia, serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.globalAlpha = htP * fadeWarp;
+
+          // Deep 3D Extrusion Shadow
+          ctx.shadowColor = 'rgba(2, 6, 18, 0.95)';
+          ctx.shadowBlur = 0;
+          ctx.shadowOffsetY = lensR * 0.024;
+          ctx.fillStyle = 'rgba(3, 7, 18, 0.92)';
+          ctx.fillText('HT', hx + lensR * 0.012, hy + lensR * 0.02);
+
+          // Brushed Platinum & Champagne-Gold Metallic Gradient
+          const mGrad = ctx.createLinearGradient(hx, hy - htSize * 0.48, hx, hy + htSize * 0.48);
+          mGrad.addColorStop(0.00, '#ffffff');
+          mGrad.addColorStop(0.26, theme.cssGold);
+          mGrad.addColorStop(0.55, theme.cssMid);
+          mGrad.addColorStop(0.82, theme.cssDeep);
+          mGrad.addColorStop(1.00, '#fef3c7');
+
+          ctx.shadowColor = `rgba(${theme.flareRGB}, 0.48)`;
+          ctx.shadowBlur = 0;
+          ctx.shadowOffsetY = 0;
+          ctx.fillStyle = mGrad;
+          ctx.fillText('HT', hx, hy);
+
+          // Crisp Beveled Metallic Edge Rim
+          ctx.shadowBlur = 0;
+          ctx.lineWidth = Math.max(1.1, lensR * 0.0068);
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.68)';
+          ctx.strokeText('HT', hx, hy);
+
+          // Diagonal Specular Light Sweep across "HT"
+          const sweepCycle = ((ambientSec * 0.42) % 1.45) - 0.22;
+          const sheenX = hx + (sweepCycle - 0.5) * htSize * 2.4;
+          const sheenG = ctx.createLinearGradient(sheenX - htSize * 0.32, hy - htSize * 0.5, sheenX + htSize * 0.32, hy + htSize * 0.5);
+          sheenG.addColorStop(0.0, 'rgba(255,255,255,0)');
+          sheenG.addColorStop(0.46, 'rgba(255,255,255,0.12)');
+          sheenG.addColorStop(0.50, 'rgba(255,255,255,0.92)');
+          sheenG.addColorStop(0.54, 'rgba(255,255,255,0.12)');
+          sheenG.addColorStop(1.0, 'rgba(255,255,255,0)');
+
+          ctx.globalCompositeOperation = 'lighter';
+          ctx.fillStyle = sheenG;
+          ctx.fillText('HT', hx, hy);
+          ctx.restore();
+        }
+
+        // 3D. FRONT HALF (z >= 0): Double-Helix Ribbons & 3D Gyroscopic Rings IN FRONT of HT
+        drawDoubleHelixRibbonsHalf(lx, ly, lensR, helixProg, ambientSec, bass, mid, high, theme, fadeWarp, true);
+        drawGyroscopicRingsHalf(lx, ly - lensR * 0.04, lensR, gyroProg, ambientSec, bass, mid, theme, fadeWarp, true);
+
+        // 3E. 105 Rising Golden Stardust Sparks & Bokeh Particles
+        const sparkProg = hasStarted ? easeOutCubic(clamp01((t - 0.65) / 1.45)) : 0.78;
+        drawRisingSparks(lx, ly, lensR, sparkProg, ambientSec, high, theme, fadeWarp);
+
+        // 3F. Subtle Curved Watch-Crystal Specular Reflection
+        const glassX = cx + Math.sin(ambientSec * 0.5) * lensR * 0.28;
+        const glassG = ctx.createLinearGradient(glassX - lensR * 0.9, cy - lensR, glassX + lensR * 0.9, cy + lensR);
+        glassG.addColorStop(0.00, 'rgba(255,255,255,0)');
+        glassG.addColorStop(0.44, 'rgba(255,255,255,0)');
+        glassG.addColorStop(0.50, `rgba(255,252,240,${(0.08 * fadeWarp).toFixed(3)})`);
+        glassG.addColorStop(0.56, 'rgba(255,255,255,0)');
+        glassG.addColorStop(1.00, 'rgba(255,255,255,0)');
+        ctx.fillStyle = glassG;
+        ctx.fillRect(cx - lensR, cy - lensR, lensR * 2, lensR * 2);
+
+        ctx.restore(); // End Circular Lens Clip
+
+        // 4. CIRCULAR ASTROLABE MEDALLION BEZEL (Dark Brushed Titanium + Gold Double Ring + 72 Ticks)
+        const bezelP = hasStarted ? easeOutCubic(clamp01((t - 0.05) / 0.85)) : 0.94;
+        const bezelAlpha = bezelP * fadeWarp;
+        if (bezelAlpha > 0.01) {
+          ctx.save();
+          ctx.globalAlpha = bezelAlpha;
+
+          const bandWidth = bezelOuterR - bezelInnerR;
+          const bandMidR = (bezelOuterR + bezelInnerR) * 0.5;
+          const bezelGrad = ctx.createLinearGradient(cx - bezelOuterR, cy - bezelOuterR, cx + bezelOuterR, cy + bezelOuterR);
+          bezelGrad.addColorStop(0.00, theme.bezelMid);
+          bezelGrad.addColorStop(0.48, theme.bezelDark);
+          bezelGrad.addColorStop(1.00, theme.bezelMid);
+
+          ctx.strokeStyle = bezelGrad;
+          ctx.lineWidth = bandWidth;
+          ctx.beginPath();
+          ctx.arc(cx, cy, bandMidR, 0, Math.PI * 2);
+          ctx.stroke();
+
+          const goldRimGrad = ctx.createLinearGradient(cx - bezelOuterR, cy - bezelOuterR, cx + bezelOuterR, cy + bezelOuterR);
+          goldRimGrad.addColorStop(0.00, '#ffffff');
+          goldRimGrad.addColorStop(0.22, theme.cssGold);
+          goldRimGrad.addColorStop(0.52, theme.cssDeep);
+          goldRimGrad.addColorStop(0.78, theme.cssMid);
+          goldRimGrad.addColorStop(1.00, '#fef3c7');
+
+          // Outer & Inner Brushed-Gold Rims
+          ctx.strokeStyle = goldRimGrad;
+          ctx.lineWidth = Math.max(2.0, R * 0.013);
+          ctx.beginPath();
+          ctx.arc(cx, cy, bezelOuterR, 0, Math.PI * 2);
+          ctx.stroke();
+
+          ctx.lineWidth = Math.max(1.6, R * 0.010);
+          ctx.beginPath();
+          ctx.arc(cx, cy, bezelInnerR, 0, Math.PI * 2);
+          ctx.stroke();
+
+          // 72 Precision Watchmaking Degree Ticks
+          ctx.save();
+          ctx.translate(cx, cy);
+          ctx.rotate(ambientSec * 0.03);
+          for (let i = 0; i < 72; i++) {
+            const a = (i / 72) * Math.PI * 2;
+            const isMajor = i % 6 === 0;
+            const r1 = bezelInnerR + R * 0.008;
+            const r2 = bezelInnerR + R * (isMajor ? 0.034 : 0.020);
+            ctx.strokeStyle = `rgba(${theme.flareRGB}, ${isMajor ? 0.65 : 0.28})`;
+            ctx.lineWidth = isMajor ? Math.max(1.2, R * 0.0045) : Math.max(0.7, R * 0.0024);
+            ctx.beginPath();
+            ctx.moveTo(Math.cos(a) * r1, Math.sin(a) * r1);
+            ctx.lineTo(Math.cos(a) * r2, Math.sin(a) * r2);
+            ctx.stroke();
+          }
+          ctx.restore();
+
+          // Counter-Rotating Outer Celestial Astrolabe Arcs
+          const outerArcR = bezelOuterR + R * 0.048;
+          ctx.save();
+          ctx.translate(cx, cy);
+          ctx.rotate(-ambientSec * 0.09);
+          ctx.strokeStyle = `rgba(${theme.flareRGB}, 0.34)`;
+          ctx.lineWidth = Math.max(1.0, R * 0.004);
+          for (let k = 0; k < 3; k++) {
+            const sa = k * ((Math.PI * 2) / 3) + 0.25;
+            ctx.beginPath();
+            ctx.arc(0, 0, outerArcR, sa, sa + 1.15);
+            ctx.stroke();
+          }
+          ctx.restore();
+
+          // Cardinal Gold Notches at 3 o'clock & 9 o'clock
+          [0, Math.PI].forEach((ang) => {
+            ctx.fillStyle = theme.cssGold;
+            ctx.beginPath();
+            ctx.arc(cx + Math.cos(ang) * textR, cy + Math.sin(ang) * textR, Math.max(2.2, R * 0.011), 0, Math.PI * 2);
+            ctx.fill();
+          });
+
+          ctx.restore();
+        }
+
+        // 5. RADIANT 8-POINTED GUIDING STAR AT 12 O'CLOCK + ANAMORPHIC FLARE
+        const starAlpha = (hasStarted ? clamp01(t / 0.40) : 0.95) * fadeWarp;
+        if (starAlpha > 0.01) {
+          ctx.save();
+          ctx.globalCompositeOperation = 'lighter';
+          const sx = cx;
+          const sy = cy - textR;
+          const pulse = 1.0 + Math.sin(ambientSec * 3.4) * 0.07 + high * 0.24 + impact * 0.45;
+          const starR = R * 0.115 * pulse;
+
+          const halo = ctx.createRadialGradient(sx, sy, 0, sx, sy, starR * 3.6);
+          halo.addColorStop(0.0, `rgba(255, 253, 244, ${(0.94 * starAlpha).toFixed(3)})`);
+          halo.addColorStop(0.28, `rgba(${theme.flareRGB}, ${(0.46 * starAlpha).toFixed(3)})`);
+          halo.addColorStop(1.0, 'rgba(0,0,0,0)');
+          ctx.fillStyle = halo;
+          ctx.beginPath();
+          ctx.arc(sx, sy, starR * 3.6, 0, Math.PI * 2);
+          ctx.fill();
+
+          const flareW = R * (0.95 + impact * 0.55 + bass * 0.20);
+          const flareG = ctx.createLinearGradient(sx - flareW, sy, sx + flareW, sy);
+          flareG.addColorStop(0.00, 'rgba(0,0,0,0)');
+          flareG.addColorStop(0.35, `rgba(${theme.flareRGB}, ${(0.24 * starAlpha).toFixed(3)})`);
+          flareG.addColorStop(0.50, `rgba(255, 255, 250, ${(0.95 * starAlpha).toFixed(3)})`);
+          flareG.addColorStop(0.65, `rgba(${theme.flareRGB}, ${(0.24 * starAlpha).toFixed(3)})`);
+          flareG.addColorStop(1.00, 'rgba(0,0,0,0)');
+          ctx.fillStyle = flareG;
+          ctx.fillRect(sx - flareW, sy - Math.max(1.2, R * 0.007), flareW * 2, Math.max(2.4, R * 0.014));
+
+          drawStar8(sx, sy, starR, starR * 0.17);
+          ctx.fillStyle = `rgba(255, 253, 240, ${(0.98 * starAlpha).toFixed(3)})`;
+          ctx.fill();
+          ctx.restore();
+        }
+
+        // 6. ALWAYS-VISIBLE CRISP CURVED RING TYPOGRAPHY (IELTS / CEFR / HUSANBOY TEACHER)
+        if (fadeWarp > 0.02) {
+          const topFontSize = Math.max(12, Math.round(R * 0.095));
+          const botFontSize = Math.max(13, Math.round(R * 0.104));
+          const glintAngleTop = -Math.PI * 0.5 + Math.sin(ambientSec * 1.15) * 0.9;
+          const glintAngleBot = Math.PI * 0.5 - Math.sin(ambientSec * 0.95) * 1.25;
+
+          const ieltsAlpha = (hasStarted ? Math.max(0.28, easeOutCubic(clamp01((t - 3.35) / 0.55))) : 0.92) * fadeWarp;
+          const cefrAlpha  = (hasStarted ? Math.max(0.28, easeOutCubic(clamp01((t - 3.65) / 0.55))) : 0.92) * fadeWarp;
+          const brandAlpha = (hasStarted ? Math.max(0.35, easeOutCubic(clamp01((t - 4.10) / 0.70))) : 0.95) * fadeWarp;
+
+          drawCurvedBezelText('IELTS', cx, cy, textR, -Math.PI * 0.5 - 0.42, false, topFontSize, topFontSize * 0.16, theme.cssGold, glintAngleTop, ieltsAlpha);
+          drawCurvedBezelText('CEFR', cx, cy, textR, -Math.PI * 0.5 + 0.42, false, topFontSize, topFontSize * 0.16, theme.cssGold, glintAngleTop, cefrAlpha);
+          drawCurvedBezelText('HUSANBOY TEACHER', cx, cy, textR, Math.PI * 0.5, true, botFontSize, botFontSize * 0.15, theme.cssGold, glintAngleBot, brandAlpha);
+        }
+
+        // 7. SUBTLE CAPTION BELOW MEDALLION ("ILM • UMID • YORUG‘ KELAJAK")
+        const tagAlpha = (hasStarted ? easeOutCubic(clamp01((t - 4.55) / 0.75)) : 0.80) * fadeWarp;
+        if (tagAlpha > 0.01) {
+          ctx.save();
+          const tagY = Math.min(h - 148, cy + bezelOuterR + Math.max(28, R * 0.145));
+          const tagSize = Math.max(11, Math.min(18, Math.round(minDim * 0.017)));
+          ctx.font = `600 ${tagSize}px "Plus Jakarta Sans", sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.globalAlpha = tagAlpha * 0.92;
+          ctx.shadowColor = 'rgba(2, 6, 18, 0.95)';
+          ctx.shadowBlur = 0;
+          ctx.fillStyle = theme.cssGold;
+          ctx.fillText('I L M   •   U M I D   •   Y O R U G ‘   K E L A J A K', cx, tagY);
+          ctx.restore();
+        }
+
+        // 8. 0.35s Crystalline Flash & Golden Warp-Out Flash Overlay
+        if (impact > 0.05 && hasStarted) {
+          ctx.save();
+          ctx.globalCompositeOperation = 'lighter';
+          const fGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 1.4);
+          fGrad.addColorStop(0.0, `rgba(255, 252, 240, ${(impact * 0.28).toFixed(3)})`);
+          fGrad.addColorStop(0.5, `rgba(${theme.flareRGB}, ${(impact * 0.10).toFixed(3)})`);
+          fGrad.addColorStop(1.0, 'rgba(0,0,0,0)');
+          ctx.fillStyle = fGrad;
+          ctx.fillRect(0, 0, w, h);
+          ctx.restore();
+        }
+
+        if (warpVal > 0.01) {
+          ctx.fillStyle = `rgba(255, 248, 224, ${(warpVal * warpVal * 0.72).toFixed(3)})`;
+          ctx.fillRect(0, 0, w, h);
+        }
+
+        // 9. Subtle Breathing Cinema Letterbox Bars
+        const barRatio = hasStarted
+          ? lerp(0.058, 0.022, easeInOutQuart(clamp01(t / DURATION)))
+          : 0.036;
+        const barH = Math.round(h * barRatio * fadeWarp);
+        if (barH > 0) {
+          ctx.fillStyle = '#02050e';
+          ctx.fillRect(0, 0, w, barH);
+          ctx.fillRect(0, h - barH, w, barH);
+        }
+      }
+
+      // -----------------------------------------------------------------------
+      // 5. RESPONSIVE HIGH-DPI RESIZE & POINTER PARALLAX
+      // -----------------------------------------------------------------------
+      function resizeCanvas() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
+        canvas.width = Math.max(1, Math.floor(window.innerWidth * dpr));
+        canvas.height = Math.max(1, Math.floor(window.innerHeight * dpr));
+      }
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      function updatePointer(clientX, clientY) {
+        pointer.tx = (clientX / Math.max(1, window.innerWidth)) * 2 - 1;
+        pointer.ty = -((clientY / Math.max(1, window.innerHeight)) * 2 - 1);
+      }
+      window.addEventListener('pointermove', (e) => updatePointer(e.clientX, e.clientY), { passive: true });
+      window.addEventListener('touchmove', (e) => {
+        if (e.touches && e.touches[0]) updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: true });
+
+      // -----------------------------------------------------------------------
+      // 6. 48-BAR MIRRORED AUDIO SPECTRUM INITIALIZATION
+      // -----------------------------------------------------------------------
+      spectrumWrap.innerHTML = '';
+      for (let i = 0; i < 48; i++) {
+        const b = document.createElement('div');
+        b.className = 'viz-bar';
+        spectrumWrap.appendChild(b);
+      }
+      const vizBars = Array.from(spectrumWrap.children);
+
+      // -----------------------------------------------------------------------
+      // 7. FULL 6.5-SECOND STUDIO WEB AUDIO API ENGINE
+      // -----------------------------------------------------------------------
+      let audioCtx = null;
+      let analyser = null;
+      let freqData = null;
+      let mediaStreamDest = null;
+      let activeNodes = [];
+      let cachedHallIR = null;
+
+      function ensureAudioContext() {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return null;
+        if (!audioCtx) {
+          audioCtx = new AC();
+          mediaStreamDest = audioCtx.createMediaStreamDestination();
+        }
+        if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+        return audioCtx;
+      }
+
+      function stopAllAudio() {
+        activeNodes.forEach((n) => {
+          try { if (typeof n.stop === 'function') n.stop(); } catch (_) {}
+          try { if (typeof n.disconnect === 'function') n.disconnect(); } catch (_) {}
+        });
+        activeNodes = [];
+        analyser = null;
+        freqData = null;
+      }
+
+      function playUIClick(freq = 987.77) {
+        if (!isSoundEnabled) return;
+        try {
+          const ac = ensureAudioContext();
+          if (!ac) return;
+          const t = ac.currentTime;
+          const o = ac.createOscillator();
+          const g = ac.createGain();
+          o.type = 'sine';
+          o.frequency.setValueAtTime(freq, t);
+          o.frequency.exponentialRampToValueAtTime(freq * 1.12, t + 0.08);
+          g.gain.setValueAtTime(0.0001, t);
+          g.gain.exponentialRampToValueAtTime(0.048, t + 0.006);
+          g.gain.exponentialRampToValueAtTime(0.0001, t + 0.13);
+          o.connect(g); g.connect(ac.destination);
+          o.start(t); o.stop(t + 0.15);
+        } catch (_) {}
+      }
+
+      function createAnalogWarmthCurve(drive = 1.4) {
+        const len = 1024;
+        const curve = new Float32Array(len);
+        for (let i = 0; i < len; i++) {
+          const x = (i * 2) / len - 1;
+          curve[i] = Math.tanh(x * drive) / Math.tanh(drive);
+        }
+        return curve;
+      }
+
+      // 3.5-Second Procedural Stereo Concert Hall Reverb Impulse Response
+      function getHallIR() {
+        if (cachedHallIR && cachedHallIR.sampleRate === audioCtx.sampleRate) return cachedHallIR;
+        const sr = audioCtx.sampleRate;
+        const len = Math.floor(sr * 3.5);
+        const ir = audioCtx.createBuffer(2, len, sr);
+        const pre = Math.floor(sr * 0.022);
+        for (let ch = 0; ch < 2; ch++) {
+          const d = ir.getChannelData(ch);
+          let lp = 0;
+          for (let i = 0; i < len; i++) {
+            if (i < pre) { d[i] = 0; continue; }
+            const p = (i - pre) / (len - pre);
+            const decay = Math.pow(1 - p, 2.65);
+            const n = Math.random() * 2 - 1;
+            const damp = 0.14 + 0.44 * Math.pow(1 - p, 1.5);
+            lp += damp * (n - lp);
+            d[i] = lp * decay * 0.86;
+          }
+        }
+        cachedHallIR = ir;
+        return ir;
+      }
+
+      function createPinkNoise(dur) {
+        const sr = audioCtx.sampleRate;
+        const len = Math.max(1, Math.floor(sr * Math.min(dur, 0.25)));
+        return audioCtx.createBuffer(1, len, sr);
+      }
+
+      function playWarpWhoosh() {
+        if (!isSoundEnabled) return;
+        try {
+          const ac = ensureAudioContext();
+          if (!ac) return;
+          const t = ac.currentTime;
+          [261.63, 392.0, 523.25].forEach((freq, idx) => {
+            const osc = ac.createOscillator();
+            const g = ac.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, t);
+            osc.frequency.exponentialRampToValueAtTime(freq * 1.5, t + 0.85);
+            g.gain.setValueAtTime(0.0001, t);
+            g.gain.linearRampToValueAtTime(0.06 / (idx + 1), t + 0.18);
+            g.gain.exponentialRampToValueAtTime(0.0001, t + 0.92);
+            osc.connect(g); g.connect(ac.destination);
+            osc.start(t); osc.stop(t + 0.96);
+          });
+        } catch (_) {}
+      }
+
+      function playStudioAudio() {
+        if (!isSoundEnabled) return;
+        try {
+          ensureAudioContext();
+          if (!audioCtx) return;
+          stopAllAudio();
+          const now = audioCtx.currentTime;
+
+          // Master Chain: Gain -> WaveShaper (Analog Warmth) -> DynamicsCompressor -> Analyser -> Out
+          const masterIn = audioCtx.createGain();
+          masterIn.gain.setValueAtTime(0.84, now);
+
+          const warmth = audioCtx.createGain();
+          warmth.gain.setValueAtTime(0.95, now);
+
+          const comp = audioCtx.createDynamicsCompressor();
+          comp.threshold.setValueAtTime(-14, now);
+          comp.knee.setValueAtTime(18, now);
+          comp.ratio.setValueAtTime(3.4, now);
+          comp.attack.setValueAtTime(0.008, now);
+          comp.release.setValueAtTime(0.25, now);
+
+          const masterOut = audioCtx.createGain();
+          masterOut.gain.setValueAtTime(0.96, now);
+
+          analyser = audioCtx.createAnalyser();
+          analyser.fftSize = 256;
+          analyser.smoothingTimeConstant = 0.74;
+          freqData = new Uint8Array(analyser.frequencyBinCount);
+
+          // Lightweight clean echo bus (zero CPU reverb crackle on mobile)
+          const revSend = audioCtx.createGain();
+          revSend.gain.setValueAtTime(0.18, now);
+          const convolver = audioCtx.createDelay(0.5);
+          convolver.delayTime.setValueAtTime(0.14, now);
+
+          // Ping-Pong Stereo Delay
+          const delSend = audioCtx.createGain();
+          delSend.gain.setValueAtTime(0.24, now);
+          const delL = audioCtx.createDelay(1.0); delL.delayTime.setValueAtTime(0.21, now);
+          const delR = audioCtx.createDelay(1.0); delR.delayTime.setValueAtTime(0.32, now);
+          const fbL = audioCtx.createGain(); fbL.gain.setValueAtTime(0.26, now);
+          const fbR = audioCtx.createGain(); fbR.gain.setValueAtTime(0.24, now);
+          const panL = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+          const panR = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+          if (panL) panL.pan.setValueAtTime(-0.74, now);
+          if (panR) panR.pan.setValueAtTime(0.74, now);
+
+          masterIn.connect(warmth);
+          warmth.connect(comp);
+          comp.connect(masterOut);
+
+          revSend.connect(convolver); convolver.connect(comp);
+          delSend.connect(delL);
+          delL.connect(fbL); fbL.connect(delR);
+          delR.connect(fbR); fbR.connect(delL);
+          if (panL && panR) {
+            delL.connect(panL); panL.connect(comp);
+            delR.connect(panR); panR.connect(comp);
+          } else {
+            delL.connect(comp); delR.connect(comp);
+          }
+
+          masterOut.connect(analyser);
+          analyser.connect(audioCtx.destination);
+          if (mediaStreamDest) masterOut.connect(mediaStreamDest);
+
+          activeNodes.push(masterIn, warmth, comp, masterOut, analyser, revSend, convolver, delSend, delL, delR, fbL, fbR);
+          if (panL) activeNodes.push(panL);
+          if (panR) activeNodes.push(panR);
+
+          function routeStereo(node, panVal, toDelay = false) {
+            const p = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+            if (p) {
+              p.pan.setValueAtTime(panVal, now);
+              node.connect(p); p.connect(masterIn); p.connect(revSend);
+              if (toDelay) p.connect(delSend);
+              activeNodes.push(p);
+            } else {
+              node.connect(masterIn); node.connect(revSend);
+              if (toDelay) node.connect(delSend);
+            }
+          }
+
+          // 1. 0.00s – 0.35s Gravitational Swell -> 0.35s Deep IMAX Sub-Bass Boom & Crystalline Flash
+          const swellSrc = audioCtx.createBufferSource();
+          swellSrc.buffer = createPinkNoise(1.4);
+          const swellBP = audioCtx.createBiquadFilter();
+          swellBP.type = 'bandpass'; swellBP.Q.setValueAtTime(2.6, now);
+          swellBP.frequency.setValueAtTime(200, now);
+          swellBP.frequency.exponentialRampToValueAtTime(3400, now + 0.35);
+          swellBP.frequency.exponentialRampToValueAtTime(640, now + 1.35);
+          const swellG = audioCtx.createGain();
+          swellG.gain.setValueAtTime(0.0001, now);
+          swellG.gain.exponentialRampToValueAtTime(0.24, now + 0.34);
+          swellG.gain.exponentialRampToValueAtTime(0.0001, now + 1.38);
+          swellSrc.connect(swellBP); swellBP.connect(swellG); routeStereo(swellG, 0, false);
+          swellSrc.start(now); swellSrc.stop(now + 1.4);
+          activeNodes.push(swellSrc, swellBP, swellG);
+
+          const tBoom = now + 0.35;
+          const subO = audioCtx.createOscillator();
+          const subG = audioCtx.createGain();
+          subO.type = 'sine';
+          subO.frequency.setValueAtTime(68, tBoom);
+          subO.frequency.exponentialRampToValueAtTime(28, tBoom + 1.15);
+          subG.gain.setValueAtTime(0.0001, tBoom);
+          subG.gain.exponentialRampToValueAtTime(0.45, tBoom + 0.02);
+          subG.gain.exponentialRampToValueAtTime(0.0001, tBoom + 1.3);
+          subO.connect(subG); subG.connect(masterIn); subG.connect(revSend);
+          subO.start(tBoom); subO.stop(tBoom + 1.35);
+          activeNodes.push(subO, subG);
+
+          [1046.50, 1567.98].forEach((f, idx) => {
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.type = idx === 0 ? 'sine' : 'triangle';
+            o.frequency.setValueAtTime(f, tBoom);
+            g.gain.setValueAtTime(0.0001, tBoom);
+            g.gain.exponentialRampToValueAtTime(idx === 0 ? 0.075 : 0.036, tBoom + 0.014);
+            g.gain.exponentialRampToValueAtTime(0.0001, tBoom + 1.4);
+            o.connect(g); routeStereo(g, idx === 0 ? -0.3 : 0.3, true);
+            o.start(tBoom); o.stop(tBoom + 1.45);
+            activeNodes.push(o, g);
+          });
+
+          // 2. 1.50s – 3.45s Silk Aurora Sweep & Shimmering Lydian Arpeggios
+          const aurSrc = audioCtx.createBufferSource();
+          aurSrc.buffer = createPinkNoise(2.0);
+          const aurBP = audioCtx.createBiquadFilter();
+          aurBP.type = 'bandpass'; aurBP.Q.setValueAtTime(3.2, now + 1.5);
+          aurBP.frequency.setValueAtTime(650, now + 1.5);
+          aurBP.frequency.exponentialRampToValueAtTime(4600, now + 2.85);
+          aurBP.frequency.exponentialRampToValueAtTime(1500, now + 3.45);
+          const aurG = audioCtx.createGain();
+          aurG.gain.setValueAtTime(0.0001, now + 1.5);
+          aurG.gain.exponentialRampToValueAtTime(0.11, now + 2.45);
+          aurG.gain.exponentialRampToValueAtTime(0.0001, now + 3.48);
+          aurSrc.connect(aurBP); aurBP.connect(aurG); routeStereo(aurG, 0.25, true);
+          aurSrc.start(now + 1.5); aurSrc.stop(now + 3.5);
+          activeNodes.push(aurSrc, aurBP, aurG);
+
+          const arpNotes = [523.25, 587.33, 659.25, 739.99, 783.99, 987.77, 1174.66, 1318.51];
+          arpNotes.forEach((f, idx) => {
+            const tH = now + 1.52 + idx * 0.21;
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.type = 'sine';
+            o.frequency.setValueAtTime(f, tH);
+            g.gain.setValueAtTime(0.0001, tH);
+            g.gain.exponentialRampToValueAtTime(0.065, tH + 0.012);
+            g.gain.exponentialRampToValueAtTime(0.0001, tH + 1.2);
+            o.connect(g);
+            routeStereo(g, -0.72 + (idx / (arpNotes.length - 1)) * 1.44, true);
+            o.start(tH); o.stop(tH + 1.25);
+            activeNodes.push(o, g);
+          });
+
+          // 3. 3.60s & 3.90s IELTS / CEFR Dual Crystalline Chimes
+          [
+            { t: 3.60, chord: [1046.50, 1318.51, 1567.98], pan: -0.45 },
+            { t: 3.90, chord: [1174.66, 1479.98, 1760.00], pan:  0.45 }
+          ].forEach((c) => {
+            const tC = now + c.t;
+            c.chord.forEach((f, hi) => {
+              const o = audioCtx.createOscillator();
+              const g = audioCtx.createGain();
+              o.type = hi === 0 ? 'sine' : 'triangle';
+              o.frequency.setValueAtTime(f, tC);
+              g.gain.setValueAtTime(0.0001, tC);
+              g.gain.exponentialRampToValueAtTime(hi === 0 ? 0.065 : 0.028, tC + 0.014);
+              g.gain.exponentialRampToValueAtTime(0.0001, tC + 1.45);
+              o.connect(g); routeStereo(g, c.pan, true);
+              o.start(tC); o.stop(tC + 1.5);
+              activeNodes.push(o, g);
+            });
+          });
+
+          // 4. 4.30s – 6.50s Warm 8-Voice Detuned C Major 9 / Lydian Orchestral Pad Resolve
+          const tRes = now + 4.30;
+          const thudO = audioCtx.createOscillator();
+          const thudG = audioCtx.createGain();
+          thudO.type = 'sine';
+          thudO.frequency.setValueAtTime(90, tRes);
+          thudO.frequency.exponentialRampToValueAtTime(32, tRes + 0.85);
+          thudG.gain.setValueAtTime(0.0001, tRes);
+          thudG.gain.exponentialRampToValueAtTime(0.38, tRes + 0.02);
+          thudG.gain.exponentialRampToValueAtTime(0.0001, tRes + 1.5);
+          thudO.connect(thudG); thudG.connect(masterIn); thudG.connect(revSend);
+          thudO.start(tRes); thudO.stop(tRes + 1.55);
+          activeNodes.push(thudO, thudG);
+
+          const resLP = audioCtx.createBiquadFilter();
+          resLP.type = 'lowpass';
+          resLP.frequency.setValueAtTime(420, tRes);
+          resLP.frequency.exponentialRampToValueAtTime(3100, tRes + 0.72);
+          resLP.frequency.exponentialRampToValueAtTime(560, tRes + 2.8);
+          resLP.connect(masterIn); resLP.connect(revSend);
+          activeNodes.push(resLP);
+
+          const pad8 = [
+            { f: 65.41,  pan: -0.15, type: 'sine',     amp: 0.075 },
+            { f: 130.81, pan: -0.50, type: 'sawtooth', amp: 0.026 },
+            { f: 146.83, pan:  0.50, type: 'triangle', amp: 0.032 },
+            { f: 164.81, pan: -0.68, type: 'triangle', amp: 0.034 },
+            { f: 196.00, pan:  0.68, type: 'triangle', amp: 0.034 },
+            { f: 246.94, pan: -0.35, type: 'sine',     amp: 0.036 },
+            { f: 293.66, pan:  0.35, type: 'sine',     amp: 0.035 },
+            { f: 369.99, pan:  0.00, type: 'sine',     amp: 0.030 }
+          ];
+
+          pad8.forEach((v) => {
+            const vg = audioCtx.createGain();
+            vg.gain.setValueAtTime(0.0001, tRes);
+            vg.gain.exponentialRampToValueAtTime(v.amp, tRes + 0.34);
+            vg.gain.exponentialRampToValueAtTime(0.0001, tRes + 3.0);
+
+            const pan = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+            if (pan) { pan.pan.setValueAtTime(v.pan, tRes); vg.connect(pan); pan.connect(resLP); activeNodes.push(pan); }
+            else { vg.connect(resLP); }
+
+            [-7, 7].forEach((cents) => {
+              const o = audioCtx.createOscillator();
+              o.type = v.type;
+              o.frequency.setValueAtTime(v.f, tRes);
+              o.detune.setValueAtTime(cents, tRes);
+              o.connect(vg);
+              o.start(tRes); o.stop(tRes + 3.1);
+              activeNodes.push(o);
+            });
+            activeNodes.push(vg);
+          });
+        } catch (err) {
+          console.warn('Web Audio xatolik:', err);
+        }
+      }
+
+      // -----------------------------------------------------------------------
+      // 8. 60FPS ANIMATION LOOP & TIMELINE SYNC
+      // -----------------------------------------------------------------------
+      let lastFrameMs = performance.now();
+
+      function updateTimelineUI(t) {
+        const clamped = Math.min(DURATION, Math.max(0, t));
+        const pct = (clamped / DURATION) * 100;
+        scrubberFill.style.width = `${pct.toFixed(2)}%`;
+        scrubberThumb.style.left = `${pct.toFixed(2)}%`;
+        scrubberTrack.setAttribute('aria-valuenow', clamped.toFixed(2));
+        timecodeDisplay.textContent = `${clamped.toFixed(2).padStart(5, '0')}s / 06.50s`;
+
+        let pIdx = 0;
+        for (let i = PHASE_LABELS.length - 1; i >= 0; i--) {
+          if (clamped >= PHASE_LABELS[i].t) { pIdx = i; break; }
+        }
+        if (pIdx !== lastPhaseIdx) {
+          lastPhaseIdx = pIdx;
+          phaseCaption.textContent = PHASE_LABELS[pIdx].text;
+        }
+
+        if (clamped >= 5.20 && warpOutStart < 0 && appOpenedOverlay.classList.contains('is-hidden')) {
+          enterCtaWrap.classList.remove('is-hidden');
+        }
+      }
+
+      function animate(nowMs) {
+        requestAnimationFrame(animate);
+
+        const dt = Math.min(0.05, Math.max(0.001, (nowMs - lastFrameMs) * 0.001));
+        lastFrameMs = nowMs;
+
+        pointer.x += (pointer.tx - pointer.x) * 0.065;
+        pointer.y += (pointer.ty - pointer.y) * 0.065;
+
+        let bass = 0, mid = 0, high = 0;
+        if (analyser && freqData && isSoundEnabled && !isPaused && audioCtx && audioCtx.state === 'running') {
+          analyser.getByteFrequencyData(freqData);
+          for (let i = 0; i < 8; i++) bass += freqData[i];
+          for (let i = 8; i < 28; i++) mid += freqData[i];
+          for (let i = 28; i < 72; i++) high += freqData[i];
+          bass /= (8 * 255);
+          mid  /= (20 * 255);
+          high /= (44 * 255);
+
+          for (let i = 0; i < 24; i++) {
+            const bin = Math.min(freqData.length - 1, Math.floor(i * 2.1 + 1));
+            const val = Math.max(0.10, Math.min(1.0, (freqData[bin] / 255) * 1.18));
+            vizBars[23 - i].style.transform = `scaleY(${val.toFixed(3)})`;
+            vizBars[24 + i].style.transform = `scaleY(${val.toFixed(3)})`;
+          }
+        } else {
+          for (let i = 0; i < 48; i++) {
+            const idle = 0.10 + 0.06 * Math.abs(Math.sin(nowMs * 0.003 + i * 0.22));
+            vizBars[i].style.transform = `scaleY(${idle.toFixed(3)})`;
+          }
+        }
+
+        const ambientSec = nowMs * 0.001;
+        let elapsed = 0;
+        if (hasStarted) {
+          if (manualSeekTime !== null) elapsed = manualSeekTime;
+          else if (isPaused) elapsed = pausedAtSec;
+          else elapsed = (nowMs - startTimestamp) * 0.001;
+
+          updateTimelineUI(elapsed);
+          if (isRecording) recLabel.textContent = `YOZILMOQDA • ${Math.min(DURATION, elapsed).toFixed(1)}s`;
+
+          if (!isPaused) {
+            if (prevTimeSec < 0.35 && elapsed >= 0.35) triggerBurst(1.15);
+            if (prevTimeSec < 4.30 && elapsed >= 4.30) triggerBurst(1.0);
+            prevTimeSec = elapsed;
+          }
+        }
+
+        const impact = hasStarted
+          ? Math.max(
+              Math.exp(-Math.pow((elapsed - 0.35) / 0.22, 2)),
+              Math.exp(-Math.pow((elapsed - 3.60) / 0.24, 2)) * 0.55,
+              Math.exp(-Math.pow((elapsed - 4.30) / 0.30, 2)) * 0.90
+            )
+          : 0;
+
+        if (hasStarted && !isPaused && !introDoneSent && elapsed >= DURATION - 0.04) {
+          finishIntro(true);
+        }
+        const warpVal = warpOutStart >= 0 ? clamp01((nowMs - warpOutStart) / 920) : 0;
+
+        renderScene(elapsed, ambientSec, dt, bass, mid, high, impact, warpVal);
+      }
+
+      // -----------------------------------------------------------------------
+      // 9. CONTROLS, THEME SWITCHER, SCRUBBER, WARP-OUT & .WEBM VIDEO EXPORT
+      // -----------------------------------------------------------------------
+      function syncPlayPauseUI() {
+        pauseIcon.style.display = isPaused ? 'none' : 'block';
+        playIcon.style.display = isPaused ? 'block' : 'none';
+      }
+
+      function syncSoundUI() {
+        soundOnIcon.style.display = isSoundEnabled ? 'block' : 'none';
+        soundOffIcon.style.display = isSoundEnabled ? 'none' : 'block';
+      }
+
+      function startCinemaSequence(withAudio = true) {
+        hasStarted = true;
+        isPaused = false;
+        pausedAtSec = 0;
+        manualSeekTime = null;
+        warpOutStart = -1;
+        prevTimeSec = 0;
+        lastPhaseIdx = -1;
+        syncPlayPauseUI();
+
+        entryPortal.classList.add('is-hidden');
+        appOpenedOverlay.classList.add('is-hidden');
+        enterCtaWrap.classList.add('is-hidden');
+        bottomBar.classList.remove('is-hidden');
+        topBar.classList.add('is-dimmed');
+
+        startTimestamp = performance.now();
+        updateTimelineUI(0);
+
+        if (withAudio && isSoundEnabled) playStudioAudio();
+        else stopAllAudio();
+      }
+
+      playPauseBtn.addEventListener('click', () => {
+        if (!hasStarted) return startCinemaSequence(true);
+        if (!isPaused) {
+          isPaused = true;
+          pausedAtSec = Math.min(DURATION, (performance.now() - startTimestamp) * 0.001);
+          if (audioCtx && audioCtx.state === 'running') audioCtx.suspend().catch(() => {});
+        } else {
+          isPaused = false;
+          if (pausedAtSec >= DURATION - 0.05) return startCinemaSequence(true);
+          startTimestamp = performance.now() - pausedAtSec * 1000;
+          if (audioCtx && audioCtx.state === 'suspended' && isSoundEnabled) audioCtx.resume().catch(() => {});
+        }
+        syncPlayPauseUI();
+      });
+
+      function seekFromClientX(clientX) {
+        const rect = scrubberTrack.getBoundingClientRect();
+        const frac = clamp01((clientX - rect.left) / Math.max(1, rect.width));
+        const targetSec = frac * DURATION;
+        hasStarted = true;
+        manualSeekTime = targetSec;
+        pausedAtSec = targetSec;
+        prevTimeSec = targetSec;
+        stopAllAudio();
+        updateTimelineUI(targetSec);
+      }
+
+      scrubberTrack.addEventListener('pointerdown', (e) => {
+        isScrubbing = true;
+        scrubberTrack.setPointerCapture(e.pointerId);
+        seekFromClientX(e.clientX);
+      });
+      scrubberTrack.addEventListener('pointermove', (e) => {
+        if (isScrubbing) seekFromClientX(e.clientX);
+      });
+      scrubberTrack.addEventListener('pointerup', (e) => {
+        if (!isScrubbing) return;
+        isScrubbing = false;
+        scrubberTrack.releasePointerCapture(e.pointerId);
+        if (manualSeekTime !== null) {
+          startTimestamp = performance.now() - manualSeekTime * 1000;
+          manualSeekTime = null;
+        }
+      });
+
+      themeBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          activeThemeIdx = Number(btn.dataset.theme) || 0;
+          themeBtns.forEach((b) => b.classList.toggle('is-active', b === btn));
+          modeLabel.textContent = `${THEMES[activeThemeIdx].name} • Samoviy Medalyon`;
+          playUIClick(783.99 + activeThemeIdx * 110);
+          showToast(`Mavzu: ${THEMES[activeThemeIdx].name}`);
+        });
+      });
+
+      soundToggleBtn.addEventListener('click', () => {
+        isSoundEnabled = !isSoundEnabled;
+        syncSoundUI();
+        if (!isSoundEnabled) {
+          stopAllAudio();
+          showToast('Ovoz o‘chirildi');
+        } else {
+          playUIClick(1046.5);
+          showToast('Ovoz yoqildi');
+          if (hasStarted && !isPaused) startCinemaSequence(true);
+        }
+      });
+
+      async function exportIntroAsWebM() {
+        if (isRecording) return;
+        if (typeof MediaRecorder === 'undefined' || !canvas.captureStream) {
+          return showToast('Brauzeringiz .webm eksportini qo‘llab-quvvatlamaydi');
+        }
+        try {
+          isRecording = true;
+          exportVideoBtn.disabled = true;
+          exportBtnText.textContent = 'Yozilmoqda...';
+          recBadge.classList.add('is-visible');
+
+          ensureAudioContext();
+          const videoStream = canvas.captureStream(60);
+          const tracks = [...videoStream.getVideoTracks()];
+          if (isSoundEnabled && mediaStreamDest && mediaStreamDest.stream) {
+            mediaStreamDest.stream.getAudioTracks().forEach((tr) => tracks.push(tr));
+          }
+          const combined = new MediaStream(tracks);
+          const mimes = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'];
+          const chosen = mimes.find((m) => MediaRecorder.isTypeSupported(m)) || '';
+
+          const recorder = new MediaRecorder(
+            combined,
+            chosen ? { mimeType: chosen, videoBitsPerSecond: 10000000 } : { videoBitsPerSecond: 10000000 }
+          );
+          const chunks = [];
+          recorder.ondataavailable = (e) => { if (e.data && e.data.size > 0) chunks.push(e.data); };
+          recorder.onstop = () => {
+            isRecording = false;
+            exportVideoBtn.disabled = false;
+            exportBtnText.textContent = 'Video (.webm)';
+            recBadge.classList.remove('is-visible');
+            if (chunks.length) {
+              const blob = new Blob(chunks, { type: chosen || 'video/webm' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = 'husanboy_teacher_intro.webm';
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              setTimeout(() => URL.revokeObjectURL(url), 4000);
+              showToast('6.5s video (husanboy_teacher_intro.webm) yuklab olindi!', 3400);
+            }
+          };
+
+          recorder.start(100);
+          startCinemaSequence(true);
+
+          setTimeout(() => {
+            if (recorder.state !== 'inactive') recorder.stop();
+          }, 7000);
+        } catch (err) {
+          console.error(err);
+          isRecording = false;
+          exportVideoBtn.disabled = false;
+          exportBtnText.textContent = 'Video (.webm)';
+          recBadge.classList.remove('is-visible');
+          showToast('Video eksportida xatolik yuz berdi');
+        }
+      }
+
+      startIntroBtn.addEventListener('click', () => startCinemaSequence(true));
+      replayBtn.addEventListener('click', () => startCinemaSequence(true));
+      replayFromOpenedBtn.addEventListener('click', () => startCinemaSequence(true));
+      exportVideoBtn.addEventListener('click', exportIntroAsWebM);
+
+      let introDoneSent = false;
+      function finishIntro(withWarp) {
+        if (introDoneSent) return;
+        introDoneSent = true;
+        enterCtaWrap.classList.add('is-hidden');
+        const skipEl = document.getElementById('skipIntroBtn');
+        if (skipEl) skipEl.style.display = 'none';
+        if (withWarp) {
+          warpOutStart = performance.now();
+          try { playWarpWhoosh(); } catch (_) {}
+          try { triggerBurst(1.55); } catch (_) {}
+          setTimeout(() => {
+            stopAllAudio();
+            try { window.parent.postMessage({ type: 'HT_INTRO_DONE' }, '*'); } catch (_) {}
+          }, 980);
+        } else {
+          stopAllAudio();
+          try { window.parent.postMessage({ type: 'HT_INTRO_DONE' }, '*'); } catch (_) {}
+        }
+      }
+
+      enterAppBtn.addEventListener('click', () => finishIntro(true));
+      const skipBtn = document.getElementById('skipIntroBtn');
+      if (skipBtn) skipBtn.addEventListener('click', () => finishIntro(false));
+
+      // Auto-start 6.5s cinematic intro immediately when app opens
+      window.onload = function () {
+        syncSoundUI();
+        syncPlayPauseUI();
+        requestAnimationFrame(animate);
+        setTimeout(() => {
+          try { startCinemaSequence(true); } catch (_) { startCinemaSequence(false); }
+        }, 60);
+        // Generous failsafe only if RAF is suspended
+        setTimeout(() => finishIntro(true), 10500);
+      };
+    })();
+  </script>
+</body>
+</html>

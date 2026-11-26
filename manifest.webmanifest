@@ -1,0 +1,17 @@
+{
+  "name": "Husanboy Teacher — CEFR & Multilevel",
+  "short_name": "Husanboy Teacher",
+  "description": "Barcha uchun ochiq CEFR & Multilevel mashqlar hamda 450 kunlik A1-C1 Shaxsiy Kabinet",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#04091a",
+  "theme_color": "#04091a",
+  "icons": [
+    {
+      "src": "./app-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
