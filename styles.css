@@ -162,3 +162,9 @@ footer a { color: #6ee7b7; text-decoration: none; font-weight: 700; }
   .hero-grid, .map-layout, .grid-2, .grid-3, #video-card { grid-template-columns: 1fr !important; }
   .nav-links { display: none; }
 }
+
+/* Mobile navbar clean wrap for small 360px screens */
+@media (max-width: 640px) {
+  .nav-inner { flex-wrap: wrap; gap: 8px; padding-top: 10px; padding-bottom: 10px; }
+  .nav-inner .btn-sm { padding: 7px 11px; font-size: 12px; }
+}
